@@ -6,6 +6,7 @@ from scipy.ndimage import geometric_transform
 from scipy import ndimage
 
 MAX_FEATURE_POINTS = 20
+SHOW_FRAME = True
 SAVE_VIDEO = False
 
 def faceSwapping(rawVideo1, rawVideo2):
@@ -45,16 +46,37 @@ def faceSwapping(rawVideo1, rawVideo2):
     # swap faces w/ gradient domain blending
 
     # main loop for optical flow
-    while(rawVideo1.isOpened() and rawVideo2.isOpened()):
+    while(ret1 and ret2):
         # load next frames
         ret1, nextFrame1 = rawVideo1.read()
-        nextGray1 = cv2.cvtColor(nextFrame1, cv2.COLOR_BGR2GRAY)
-        nextGray1 = np.array(nextGray1)
+        if ret1:
+            nextGray1 = cv2.cvtColor(nextFrame1, cv2.COLOR_BGR2GRAY)
+            nextGray1 = np.array(nextGray1)
 
         ret2, nextFrame2 = rawVideo2.read()
-        nextGray2 = cv2.cvtColor(nextFrame2, cv2.COLOR_BGR2GRAY)
-        nextGray2 = np.array(nextGray2)
+        if ret2:
+            nextGray2 = cv2.cvtColor(nextFrame2, cv2.COLOR_BGR2GRAY)
+            nextGray2 = np.array(nextGray2)
 
         # swap faces w/ gradient domain blending
+
+        if SHOW_FRAME:
+            plt.show()
+
+        frameCount += 1
+
+        # if SAVE_VIDEO:
+            # out.write(nextFrame)
+
+        if cv2.waitKey(33) & 0xFF == ord('q'):
+            break
+
+
+    if SAVE_VIDEO:
+        out.release()
+
+    rawVideo1.release()
+    rawVideo2.release()
+    cv2.destroyAllWindows()
 
     return
