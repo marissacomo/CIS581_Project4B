@@ -14,6 +14,8 @@ import dlib
 MAX_FEATURE_POINTS = 20
 SHOW_FRAME = True
 SAVE_VIDEO = False
+VIDEO_WIDTH = 480
+VIDEO_HEIGHT = 360
 
 
 # params for ShiTomasi corner detection
@@ -153,6 +155,9 @@ def faceSwapping(rawVideo1, rawVideo2):
     ret1, prevFrame1 = rawVideo1.read()   
     ret2, prevFrame2 = rawVideo2.read()  
 
+    prevFrame1 = cv2.resize(prevFrame1, (VIDEO_WIDTH, VIDEO_HEIGHT))
+    prevFrame2 = cv2.resize(prevFrame2, (VIDEO_WIDTH, VIDEO_HEIGHT))
+
     prevGray1 = cv2.cvtColor(prevFrame1, cv2.COLOR_BGR2GRAY)
     prevGray2 = cv2.cvtColor(prevFrame2, cv2.COLOR_BGR2GRAY)
 
@@ -209,6 +214,9 @@ def faceSwapping(rawVideo1, rawVideo2):
         # load next frames
         ret1, nextFrame1 = rawVideo1.read()
         ret2, nextFrame2 = rawVideo2.read()
+
+        nextFrame1 = cv2.resize(nextFrame1, (VIDEO_WIDTH, VIDEO_HEIGHT))
+        nextFrame2 = cv2.resize(nextFrame2, (VIDEO_WIDTH, VIDEO_HEIGHT))
 
         # convert next frame for video 1 to gray and make it an np array
         if ret1:

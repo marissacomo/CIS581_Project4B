@@ -19,6 +19,7 @@ def main(video1Path, video2Path):
 
 
 main('../CIS581Project4PartCDatasets/Easy/FrankUnderwood.mp4', '../CIS581Project4PartCDatasets/Easy/MrRobot.mp4')
+# main('../CIS581Project4PartCDatasets/Easy/JonSnow.mp4', '../CIS581Project4PartCDatasets/Easy/MrRobot.mp4')
 
 
 # 1. Source and Replacement Face and Facial Landmark's Detection
