@@ -18,6 +18,10 @@ def main(video1Path, video2Path):
     faceSwapping(rawVideo1, rawVideo2)
 
 
-# main('../CIS581Project4PartCDatasets/Easy/FrankUnderwood.mp4', '../CIS581Project4PartCDatasets/Easy/MrRobot.mp4')
-main('../CIS581Project4PartCDatasets/Easy/MrRobot.mp4', '../CIS581Project4PartCDatasets/Easy/FrankUnderwood.mp4')
+main('../CIS581Project4PartCDatasets/Easy/FrankUnderwood.mp4', '../CIS581Project4PartCDatasets/Easy/MrRobot.mp4')
+# main('../CIS581Project4PartCDatasets/Easy/FrankUnderwood.mp4', '../CIS581Project4PartCDatasets/Easy/Marissa.mp4')
+# main('../CIS581Project4PartCDatasets/Easy/Marissa.mp4', '../CIS581Project4PartCDatasets/Easy/Zach.mp4')
+# main('../CIS581Project4PartCDatasets/Easy/Zach.mp4', '../CIS581Project4PartCDatasets/Easy/Marissa.mp4')
+# main('../CIS581Project4PartCDatasets/Easy/MrRobot.mp4', '../CIS581Project4PartCDatasets/Easy/FrankUnderwood.mp4')
+# main('../CIS581Project4PartCDatasets/Easy/FrankUnderwood.mp4','../CIS581Project4PartCDatasets/Medium/LucianoRosso1.mp4')
 # main('../CIS581Project4PartCDatasets/Easy/JonSnow.mp4', '../CIS581Project4PartCDatasets/Easy/MrRobot.mp4')
