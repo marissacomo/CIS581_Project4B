@@ -13,7 +13,7 @@ import dlib
 
 SHOW_FRAME = False
 SAVE_VIDEO = True
-DEBUG = True
+DEBUG = False
 
 # params for ShiTomasi corner detection
 # open-source code: https://www.pyimagesearch.com/2017/04/03/facial-landmarks-dlib-opencv-python/
@@ -53,13 +53,12 @@ def rectContains(rect, point) :
         return False
     return True
 
-#calculate delanauy triangle
+#calculate delanauy triangulation
 # open-source code: https://github.com/spmallick/learnopencv/blob/master/FaceSwap/faceSwap.py
 def calculateDelaunayTriangles(rect, points):
-    #create subdiv
+    #create subdivisions
     subdiv = cv2.Subdiv2D(rect);
     
-    # Insert points into subdiv
     for p in points:
         subdiv.insert(p) 
     
@@ -80,12 +79,11 @@ def calculateDelaunayTriangles(rect, points):
         
         if rectContains(rect, pt1) and rectContains(rect, pt2) and rectContains(rect, pt3):
             ind = []
-            #Get face-points (from 68 face detector) by coordinates
+            # this gets face-points (from 68 face detector) by coordinates
             for j in range(0, 3):
                 for k in range(0, len(points)):                    
                     if(abs(pt[j][0] - points[k][0]) < 1.0 and abs(pt[j][1] - points[k][1]) < 1.0):
                         ind.append(k)    
-            # Three points form a triangle. Triangle array corresponds to the file tri.txt in FaceMorph 
             if len(ind) == 3:                                                
                 delaunayTri.append((ind[0], ind[1], ind[2]))
         
@@ -267,7 +265,6 @@ def faceSwapping(rawVideo1, rawVideo2, outputPrefix):
         # Filter the points
         corrected_feature_pts1 = correctFeaturePoints(of_tracked_feature_pts1, new_feature_pts1, prev_feature_pts1)
         corrected_feature_pts2 = correctFeaturePoints(of_tracked_feature_pts2, new_feature_pts2, prev_feature_pts2)
-        # corrected_feature_pts1, corrected_feature_pts2 = correctFeaturePointsForAll(of_tracked_feature_pts1, of_tracked_feature_pts2, new_feature_pts1, new_feature_pts2, prev_feature_pts1, prev_feature_pts2)
 
         of_tracked_feature_pts1 = corrected_feature_pts1
         of_tracked_feature_pts2 = corrected_feature_pts2

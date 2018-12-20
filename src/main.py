@@ -18,7 +18,7 @@ def main(video1Path, video2Path, prefix):
     faceSwapping(rawVideo1, rawVideo2, prefix)
 
 
-# main('../CIS581Project4PartCDatasets/Easy/FrankUnderwood.mp4', '../CIS581Project4PartCDatasets/Easy/MrRobot.mp4', "Frank_Robot")
+main('../CIS581Project4PartCDatasets/Easy/FrankUnderwood.mp4', '../CIS581Project4PartCDatasets/Easy/MrRobot.mp4', "Frank_Robot")
 # main('../CIS581Project4PartCDatasets/Easy/FrankUnderwood.mp4', '../CIS581Project4PartCDatasets/Easy/MrRobot.mp4', "Frank_Robot_Points")
-main('../CIS581Project4PartCDatasets/Easy/FrankUnderwood.mp4', '../CIS581Project4PartCDatasets/Easy/MrRobot.mp4', "Frank_Robot_Tri")
+# main('../CIS581Project4PartCDatasets/Easy/FrankUnderwood.mp4', '../CIS581Project4PartCDatasets/Easy/MrRobot.mp4', "Frank_Robot_Tri")
 # main('../CIS581Project4PartCDatasets/Easy/Marissa.mp4', '../CIS581Project4PartCDatasets/Easy/Zach.mp4', "Marissa_Zach")
