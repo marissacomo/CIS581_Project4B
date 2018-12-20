@@ -11,11 +11,9 @@ import imutils
 import time
 import dlib
 
-SHOW_FRAME = True
+SHOW_FRAME = False
 SAVE_VIDEO = True
-DEBUG = False
-MIN_FEATURIZE_DISTANCE = 2
-
+DEBUG = True
 
 # params for ShiTomasi corner detection
 # open-source code: https://www.pyimagesearch.com/2017/04/03/facial-landmarks-dlib-opencv-python/
@@ -134,19 +132,7 @@ def featurize(prevGray1, prevGray2, detector, predictor):
     feature_pts1 = np.array(feature_pts1).astype(np.float32)
     feature_pts2 = np.array(feature_pts2).astype(np.float32)
 
-
-    # selected_indices1 = np.array(feature_pts1[:40])
-    # selected_indices1 = np.concatenate((selected_indices1, feature_pts1[42:46]), axis=0)
-    # selected_indices1 = np.concatenate((selected_indices1, [feature_pts1[48]]), axis=0)
-    # selected_indices1 = np.concatenate((selected_indices1, feature_pts1[54:60]), axis=0)
-
-    # selected_indices2 = np.array(feature_pts2[:40])
-    # selected_indices2 = np.concatenate((selected_indices2, feature_pts2[42:46]), axis=0)
-    # selected_indices2 = np.concatenate((selected_indices2, [feature_pts2[48]]), axis=0)
-    # selected_indices2 = np.concatenate((selected_indices2, feature_pts2[54:60]), axis=0)
-
     return feature_pts1[:-8], feature_pts2[:-8]
-    # return selected_indices1.astype(np.float32), selected_indices2.astype(np.float32)
 
 # Warps and alpha blends triangular regions from img1 and img2 to img
 # open-source code: https://github.com/spmallick/learnopencv/blob/master/FaceSwap/faceSwap.py
@@ -200,12 +186,6 @@ def correctFeaturePoints(trackedFeaturePoints, newFeaturePoints, prevFramePoints
         opticalFlowDelta = np.linalg.norm(trackedPoint - prevPoint)
         comparisonDelta = np.linalg.norm(trackedPoint - newPoint)
 
-        # distSq = (trackedPoint[0] - newPoint[0]) * (trackedPoint[0] - newPoint[0]) + (trackedPoint[1] - newPoint[1]) * (trackedPoint[1] - newPoint[1])
-
-        # if comparisonDelta > MIN_FEATURIZE_DISTANCE:
-        #     result.append(newPt)
-        # else:
-        #     result.append(ofPt)
         currentPt = 0.6 * newPt + 0.4 * ofPt
         currentPt = 0.1 * prevPt + 0.9 * currentPt
 
@@ -215,60 +195,7 @@ def correctFeaturePoints(trackedFeaturePoints, newFeaturePoints, prevFramePoints
 
     return result
 
-
-# def correctFeaturePointsForAll(trackedFeaturePoints1, trackedFeaturePoints2, newFeaturePoints1, newFeaturePoints2, prevFramePoints1, prevFramePoints2):
-#     result1 = []
-#     result2 = []
-
-#     for idx1 in range(0, len(trackedFeaturePoints1)):
-#         ofPt1 = trackedFeaturePoints1[idx1]
-#         newPt1 = newFeaturePoints1[idx1]
-#         prevPt1 = prevFramePoints1[idx1]
-
-#         ofPt2 = trackedFeaturePoints2[idx1]
-#         newPt2 = newFeaturePoints2[idx1]
-#         prevPt2 = prevFramePoints2[idx1]
-        
-#         trackedPoint1 = np.array([ofPt1[0][0], ofPt1[0][1]])
-#         newPoint1 = np.array([newPt1[0][0], newPt1[0][1]])
-#         prevPoint1 = np.array([prevPt1[0][0], prevPt1[0][1]])
-
-#         trackedPoint2 = np.array([ofPt2[0][0], ofPt2[0][1]])
-#         newPoint2 = np.array([newPt2[0][0], newPt2[0][1]])
-#         prevPoint2 = np.array([prevPt2[0][0], prevPt2[0][1]])
-
-#         newPoint1Delta = np.linalg.norm(newPoint1 - prevPoint1)
-#         opticalFlow1Delta = np.linalg.norm(trackedPoint1 - prevPoint1)
-#         comparison1Delta = np.linalg.norm(trackedPoint1 - newPoint1)
-
-#         newPoint2Delta = np.linalg.norm(newPoint2 - prevPoint2)
-#         opticalFlow2Delta = np.linalg.norm(trackedPoint2 - prevPoint2)
-#         comparison2Delta = np.linalg.norm(trackedPoint2 - newPoint2)
-
-#         # # distSq = (trackedPoint[0] - newPoint[0]) * (trackedPoint[0] - newPoint[0]) + (trackedPoint[1] - newPoint[1]) * (trackedPoint[1] - newPoint[1])
-
-#         # # if comparisonDelta > MIN_FEATURIZE_DISTANCE:
-#         # #     result.append(newPt)
-#         # # else:
-#         # #     result.append(ofPt)
-#         # currentPt = 0.7 * newPt + 0.3 * ofPt
-#         # currentPt = 0.4 * prevPt + 0.6 * currentPt
-#         if (newPoint1Delta > MIN_FEATURIZE_DISTANCE) or (newPoint2Delta > MIN_FEATURIZE_DISTANCE):
-#             if (newPoint1Delta > newPoint2Delta):
-#                 asd;lfkj
-#             else:  
-#                 aslkfj
-
-
-#         result1.append(currentPt1)
-#         result2.append(currentPt2)
-
-#     result1 = np.array(result1).astype(np.float32)
-#     result2 = np.array(result2).astype(np.float32)
-
-#     return result1, result2
-
-def faceSwapping(rawVideo1, rawVideo2):
+def faceSwapping(rawVideo1, rawVideo2, outputPrefix):
 
     # get video1 and video2 resolutions and FPS
     fps1 = rawVideo1.get(cv2.CAP_PROP_FPS)
@@ -282,7 +209,8 @@ def faceSwapping(rawVideo1, rawVideo2):
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
 
     if SAVE_VIDEO:
-        out = cv2.VideoWriter('output.avi', fourcc, fps2, (resW2, resH2))
+        out = cv2.VideoWriter(outputPrefix + 'AB.avi', fourcc, fps2, (resW2, resH2))
+        out2 = cv2.VideoWriter(outputPrefix + 'BA.avi', fourcc, fps1, (resW1, resH1))
 
     # get first frames
     ret1, prevFrame1 = rawVideo1.read()   
@@ -398,6 +326,7 @@ def faceSwapping(rawVideo1, rawVideo2):
                 t2.append(pts2[dt[i][j]])
             
             warpTriangle(nextFrame1, nextWarped1, t1, t2)
+            warpTriangle(nextFrame2, nextWarped2, t2, t1)
 
 
 
@@ -414,28 +343,41 @@ def faceSwapping(rawVideo1, rawVideo2):
         
         center = ((r[0]+int(r[2]/2), r[1]+int(r[3]/2)))
 
-        # tps = cv2.createThinPlateSplineShapeTransformer()
-        # tps.estimateTransformation(np.array(pts1).reshape(1, -1, 2), np.array(pts2).reshape(1, -1, 2), matches)
-        # nextWarped1 = tps.warpImage(nextFrame1, flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
-
-        # print(nextWarped1)
-        # print(nextWarped1.shape)
-
-        # plt.imshow(nextWarped1)
-        # plt.show()
-
         # Clone seamlessly.
         output = cv2.seamlessClone(np.uint8(nextWarped1), nextFrame2, mask, center, cv2.NORMAL_CLONE)
 
-        # draw contours for video 1 and 2
-        if DEBUG:
-            cv2.drawContours(output, [hull2.astype(int)], 0, (255,0,0), 1, 8)
+        hull8U2 = []
+        for i in range(0, len(hull1Proper)):
+            hull8U2.append((hull1Proper[i][0], hull1Proper[i][1]))
+        
+        mask2 = np.zeros(nextFrame1.shape, dtype = nextFrame1.dtype)  
+        
+        cv2.fillConvexPoly(mask2, np.int32(hull8U2), (255, 255, 255))
+        
+        r2 = cv2.boundingRect(np.float32([hull1Proper]))    
+        
+        center2 = ((r2[0]+int(r2[2]/2), r2[1]+int(r2[3]/2)))
 
-            for i in range(len(corrected_feature_pts2)):
-                point = corrected_feature_pts2[i][0] # point x,y
-                x = int(point[0])
-                y = int(point[1])
-                cv2.circle(output, (x, y), 1, (0, 0, 255), -1)
+        # Clone seamlessly.
+        output2 = cv2.seamlessClone(np.uint8(nextWarped2), nextFrame1, mask2, center2, cv2.NORMAL_CLONE)
+
+        # draw contours for video 1 and 2
+        # if DEBUG:
+        #     cv2.drawContours(output, [hull2.astype(int)], 0, (255,0,0), 1, 8)
+
+        #     for i in range(len(corrected_feature_pts2)):
+        #         point = corrected_feature_pts2[i][0] # point x,y
+        #         x = int(point[0])
+        #         y = int(point[1])
+        #         cv2.circle(output, (x, y), 1, (0, 0, 255), -1)
+
+        #     cv2.drawContours(output2, [hull1.astype(int)], 0, (255,0,0), 1, 8)
+
+        #     for i in range(len(corrected_feature_pts1)):
+        #         point = corrected_feature_pts1[i][0] # point x,y
+        #         x = int(point[0])
+        #         y = int(point[1])
+        #         cv2.circle(output2, (x, y), 1, (0, 0, 255), -1)
            
         # set prev to next
         prevFrame1 = nextFrame1.copy() # video 1
@@ -457,6 +399,19 @@ def faceSwapping(rawVideo1, rawVideo2):
                 pts = pts.reshape((-1,1,2))
                 cv2.polylines(output,[pts],True,(0,255,255))
 
+            for i in range(0, len(dt)):
+                # t1 = []
+                t2 = []
+                
+                #get points for img1, img2 corresponding to the triangles
+                for j in range(0, 3):
+                    # t1.append(pts1[dt[i][j]])
+                    t2.append(pts1[dt[i][j]])
+
+                pts = np.array(t2, np.int32)
+                pts = pts.reshape((-1,1,2))
+                cv2.polylines(output2,[pts],True,(0,255,255))
+
         #show the frame
         if SHOW_FRAME:
             # cv2.imshow("nextFrame1", nextFrame1)
@@ -466,6 +421,7 @@ def faceSwapping(rawVideo1, rawVideo2):
         if SAVE_VIDEO:
             print("Frame: ", frameCount)
             out.write(output)
+            out2.write(output2)
 
         if cv2.waitKey(33) & 0xFF == ord('q'):
             break
@@ -474,6 +430,7 @@ def faceSwapping(rawVideo1, rawVideo2):
 
     if SAVE_VIDEO:
         out.release()
+        out2.release()
 
     rawVideo1.release()
     rawVideo2.release()
